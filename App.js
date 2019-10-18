@@ -11,6 +11,8 @@ export default class App extends Component {
     location: null,
     errorMessage: null,
     id: null,
+
+    
   };
 
   componentWillMount() {
@@ -32,7 +34,6 @@ export default class App extends Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    =location.timestamp;
     this.setState({ location });
     setTimeout( this._getLocationAsync, 1000 );
   };
