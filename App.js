@@ -19,7 +19,6 @@ export default class App extends Component {
         errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
       });
     } else {
-
       this._getLocationAsync();
     }
   }
@@ -33,8 +32,9 @@ export default class App extends Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
+    =location.timestamp;
     this.setState({ location });
-    setTimeout( this._getLocationAsync, 0 );
+    setTimeout( this._getLocationAsync, 1000 );
   };
 
   render() {
@@ -42,7 +42,7 @@ export default class App extends Component {
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
-      text = JSON.stringify(this.state.location)+Constants.installationId;
+      text = JSON.stringify(this.state.location);
     }
 
     return (
