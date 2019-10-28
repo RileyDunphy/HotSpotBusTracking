@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   Platform,
   StyleSheet,
@@ -10,19 +10,17 @@ import {
   Alert,
   AsyncStorage,
   Geolocation
-} from 'react-native';
-//import AsyncStorage from '@react-native-community/async-storage';
-//import Geolocation from '@react-native-community/geolocation';
-import Constants from 'expo-constants';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
-import{TaskManager} from 'expo';
+} from "react-native";
+import Constants from "expo-constants";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
+import { TaskManager } from "expo";
 
 const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
+  ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
   android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+    "Double tap R on your keyboard to reload,\n" +
+    "Shake or press menu button for dev menu"
 });
 
 export default class App extends Component {
@@ -37,47 +35,19 @@ export default class App extends Component {
     time: null,
     routes: null,
     routelist: null,
-    selectedRoute: 0,
+    selectedRoute: 0
   };
-  
-  /*componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }*/
-
-  /*_getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    location = JSON.stringify(location);
-    this.setState({ location });
-    this.timeConvert();
-          this.publishLocationData();
-    setTimeout( this._getLocationAsync, 1000 );
-  };*/
-
 
   findCoordinates() {
     navigator.geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-        this.setState({location});
+        this.setState({ location });
         this.timeConvert();
-          this.publishLocationData();
-        
+        this.publishLocationData();
       },
       error => Alert.alert(error.message),
-      {enableHighAccuracy: true, timeout: 10000, maximumAge: 0},
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
   //Author Josh
@@ -85,38 +55,38 @@ export default class App extends Component {
     if (this.location != null) {
       var temp = JSON.parse(this.state.location); //first parse the json
 
-      var timestamp = temp['timestamp'];
+      var timestamp = temp["timestamp"];
       var ts = new Date(timestamp);
       var timeFormatted =
         ts.getFullYear() +
-        '-' +
+        "-" +
         ts.getMonth() +
-        '-' +
+        "-" +
         ts.getDate() +
-        ' ' +
+        " " +
         ts.getHours() +
-        ':' +
+        ":" +
         ts.getMinutes() +
-        ':' +
+        ":" +
         ts.getSeconds();
       this.state.time = timeFormatted;
     }
   }
   //author Josh
   getCityRoutes = async () => {
-    var city = await AsyncStorage.getItem('cityID');
-    fetch('https://next.hotspotpark.com/busTracking/getRoutesForCity', {
-      method: 'POST',
+    var city = await AsyncStorage.getItem("cityID");
+    fetch("https://next.hotspotpark.com/busTracking/getRoutesForCity", {
+      method: "POST",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({city_id: city}),
+      body: JSON.stringify({ city_id: city })
     })
       .then(response => response.json())
       .then(data => {
         this.state.routes = JSON.stringify(data);
-        this.setState({routelist: data});
+        this.setState({ routelist: data });
       })
       .catch(error => {
         console.error(error);
@@ -124,25 +94,25 @@ export default class App extends Component {
   };
 
   setID = async () => {
-    await AsyncStorage.setItem('cityID', this.txtCityID);
-    await AsyncStorage.setItem('busID', this.txtBusID);
-    this.cityID = await AsyncStorage.getItem('cityID');
-    this.busID = await AsyncStorage.getItem('busID');
+    await AsyncStorage.setItem("cityID", this.txtCityID);
+    await AsyncStorage.setItem("busID", this.txtBusID);
+    this.cityID = await AsyncStorage.getItem("cityID");
+    this.busID = await AsyncStorage.getItem("busID");
   };
 
   getID = async () => {
-    this.cityID = await AsyncStorage.getItem('cityID');
-    this.busID = await AsyncStorage.getItem('busID');
+    this.cityID = await AsyncStorage.getItem("cityID");
+    this.busID = await AsyncStorage.getItem("busID");
     return this.cityID;
   };
 
   clearStorage = async () => {
-    await AsyncStorage.removeItem('cityID');
-    await AsyncStorage.removeItem('busID');
-    this.cityID = await AsyncStorage.getItem('cityID');
-    this.busID = await AsyncStorage.getItem('busID');
-    this.txtCityID = await AsyncStorage.getItem('cityID');
-    this.txtBusID = await AsyncStorage.getItem('busID');
+    await AsyncStorage.removeItem("cityID");
+    await AsyncStorage.removeItem("busID");
+    this.cityID = await AsyncStorage.getItem("cityID");
+    this.busID = await AsyncStorage.getItem("busID");
+    this.txtCityID = await AsyncStorage.getItem("cityID");
+    this.txtBusID = await AsyncStorage.getItem("busID");
   };
 
   checkUserSignedIn() {
@@ -159,7 +129,7 @@ export default class App extends Component {
         return false;
       }
     } catch (error) {
-      alert.show('Error getting data');
+      alert.show("Error getting data");
     }
   }
   //author josh
@@ -169,30 +139,30 @@ export default class App extends Component {
   publishLocationData() {
     if (this.state.selectedRoute != 0 && this.state.location != null) {
       temp = JSON.parse(this.state.location);
-      var coords = temp['coords'];
-      var mockedVal = temp['mocked'];
-      var accuracy = coords['accuracy'];
+      var coords = temp["coords"];
+      var mockedVal = temp["mocked"];
+      var accuracy = coords["accuracy"];
 
-      var altitude = coords['altitude'];
-      var heading = coords['heading'];
-      var lat = coords['latitude'];
-      var lon = coords['longitude'];
-      var speed = coords['speed'];
-      var timestamp = temp['timestamp'];
+      var altitude = coords["altitude"];
+      var heading = coords["heading"];
+      var lat = coords["latitude"];
+      var lon = coords["longitude"];
+      var speed = coords["speed"];
+      var timestamp = temp["timestamp"];
       var ts = new Date(timestamp);
       ts.setMonth(ts.getMonth() + 1);
 
       var timeFormatted =
         ts.getFullYear() +
-        '-' +
+        "-" +
         ts.getMonth() +
-        '-' +
+        "-" +
         ts.getDate() +
-        ' ' +
+        " " +
         ts.getHours() +
-        ':' +
+        ":" +
         ts.getMinutes() +
-        ':' +
+        ":" +
         ts.getSeconds();
       this.state.time = timeFormatted;
 
@@ -205,19 +175,19 @@ export default class App extends Component {
         latitude: lat,
         speed: speed,
         accuracy: accuracy,
-        altitude: altitude,
+        altitude: altitude
       });
 
       fetch(
-        'https://next.hotspotpark.com/busTracking/submitBusTrackingInformation',
+        "https://next.hotspotpark.com/busTracking/submitBusTrackingInformation",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: "application/json",
+            "Content-Type": "application/json"
           },
-          body: json,
-        },
+          body: json
+        }
       ).catch(error => {
         console.error(error);
       });
@@ -246,7 +216,8 @@ export default class App extends Component {
             onValueChange={(itemValue, itemIndex) =>
               this.setRoute(itemValue, itemIndex)
             }
-            style={{height: 50, width: 200}}>
+            style={{ height: 50, width: 200 }}
+          >
             <Picker.Item label="Select a Route" value="0" />
             {Object.keys(this.state.routelist.data).map(key => {
               return (
@@ -272,8 +243,8 @@ export default class App extends Component {
             style={{
               height: 40,
               width: 100,
-              borderColor: 'gray',
-              borderWidth: 1,
+              borderColor: "gray",
+              borderWidth: 1
             }}
             onChangeText={text => (this.txtCityID = text)}
           />
@@ -281,8 +252,8 @@ export default class App extends Component {
             style={{
               height: 40,
               width: 100,
-              borderColor: 'gray',
-              borderWidth: 1,
+              borderColor: "gray",
+              borderWidth: 1
             }}
             onChangeText={text => (this.txtBusID = text)}
           />
@@ -298,18 +269,18 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+    textAlign: "center",
+    margin: 10
   },
   instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5
+  }
 });
