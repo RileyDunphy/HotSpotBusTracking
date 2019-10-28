@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HotSpot Geolocation",
-    "slug": "HotSpot",
+    "name": "TrackingDevice",
+    "slug": "trackingdevice",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -26,8 +26,9 @@
     "ios": {
       "supportsTablet": true
     },
-    "android":{
-      "package":"com.hotspot.nbcc"
-    }
+    "android": {
+      "package": "com.hotspot.nbcc"
+    },
+    "description": ""
   }
 }

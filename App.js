@@ -105,7 +105,6 @@ export default class App extends Component {
       .then(data => {
         this.state.routes = JSON.stringify(data);
         this.setState({ routelist: data });
-        console.log(this.state.routelist.data);
       })
       .catch(error => {
         console.error(error);
@@ -154,6 +153,11 @@ export default class App extends Component {
   //author josh
   setRoute(routeValue, routeIndex) {
     this.state.selectedRoute = routeValue;
+    if (routeValue > 0) {
+      this.message = "Now Tracking: ";
+    } else if ((routeValue = -1)) {
+      this.message = "Out of Service";
+    }
   }
   publishLocationData() {
     if (this.oldLocation != null) {
@@ -164,16 +168,13 @@ export default class App extends Component {
         this.location["longitude"]
       );
     }
-    console.log(this.oldLocation);
     if (meters > 5 || this.oldLocation == null) {
       if (this.state.selectedRoute > 0 && this.state.location != null) {
-        this.message = "Sending Location Data"
         this.oldLocation = this.location;
         temp = JSON.parse(this.state.location);
         var coords = temp["coords"];
         var mockedVal = temp["mocked"];
         var accuracy = coords["accuracy"];
-
         var altitude = coords["altitude"];
         var heading = coords["heading"];
         var lat = coords["latitude"];
@@ -222,8 +223,9 @@ export default class App extends Component {
         ).catch(error => {
           console.error(error);
         });
+      } else {
+        this.message = "";
       }
-      else{this.message="";}
     }
   }
 
@@ -237,27 +239,34 @@ export default class App extends Component {
     if (value) {
       screen = (
         <View style={styles.container}>
-          {/*<Text style={{color:'white'}}>Location: {this.state.location}</Text>*/}
-          <Text style={{ color: "white", fontSize:50 }}>City ID: {this.cityID}</Text>
-          <Text style={{ color: "white",fontSize:50 }}>Bus ID: {this.busID}</Text>
-          <Text style={{ color: "white", fontSize:30 }}>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 50,
+              position: "absolute",
+              bottom: 0,
+              right: 0
+            }}
+          >
+            {this.busID}
+          </Text>
+          <Text style={{ color: "white", fontSize: 50,
+    justifyContent: "center",
+    alignItems: "center", textAlign:"center"  }}>
             {this.message}
-            {/*this.state.routelist.data[this.state.selectedRoute]*/}
+            {this.state.routelist.data[this.state.selectedRoute]}
           </Text>
           <Picker
-            selectedValue={this.state.selectedRoute}
+            selectedValue={0}
             onValueChange={(itemValue, itemIndex) =>
               this.setRoute(itemValue, itemIndex)
             }
-            textTextStyle= {{
-              textAlign: "center"
-           }}
             style={{
               height: 75,
               width: 300,
               color: "black",
               backgroundColor: "lightgray",
-              fontSize:50
+              fontSize: 50
             }}
           >
             <Picker.Item label="Select a Route" value="0" />
@@ -272,7 +281,6 @@ export default class App extends Component {
             })}
             <Picker.Item label="Out of Service" value="-1" />
           </Picker>
-          <Text style={{ color: "white", fontSize:30 }}>{(new Date().toLocaleString())}</Text>
           {/*<Button onPress={() => this.clearStorage()} title="Clear Storage" />*/}
         </View>
       );
@@ -281,7 +289,7 @@ export default class App extends Component {
       screen = (
         <View style={styles.container}>
           <View>
-            <Text style={{ color: "white" }}>
+            <Text style={{ color: "white"}}>
               Please enter City ID and Bus ID
             </Text>
           </View>
