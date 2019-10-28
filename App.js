@@ -26,6 +26,7 @@ const instructions = Platform.select({
 export default class App extends Component {
   state = {
     location: null,
+    oldLocation: null,
     timer: setInterval(() => this.findCoordinates(), 5000),
     txtCityID: null,
     txtBusID: null,
@@ -37,6 +38,22 @@ export default class App extends Component {
     routelist: null,
     selectedRoute: 0
   };
+
+  haversineFormula(lat1, lon1, lat2, lon2) {
+    // generally used geo measurement function
+    var R = 6378.137; // Radius of earth in KM
+    var dLat = (lat2 * Math.PI) / 180 - (lat1 * Math.PI) / 180;
+    var dLon = (lon2 * Math.PI) / 180 - (lon1 * Math.PI) / 180;
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d * 1000; // meters
+  }
 
   findCoordinates() {
     navigator.geolocation.getCurrentPosition(
@@ -87,6 +104,7 @@ export default class App extends Component {
       .then(data => {
         this.state.routes = JSON.stringify(data);
         this.setState({ routelist: data });
+        console.log(this.state.routelist.data);
       })
       .catch(error => {
         console.error(error);
@@ -137,60 +155,72 @@ export default class App extends Component {
     this.state.selectedRoute = routeValue;
   }
   publishLocationData() {
-    if (this.state.selectedRoute != 0 && this.state.location != null) {
-      temp = JSON.parse(this.state.location);
-      var coords = temp["coords"];
-      var mockedVal = temp["mocked"];
-      var accuracy = coords["accuracy"];
+    if (this.oldLocation != null) {
+      var meters = this.haversineFormula(
+        this.oldLocation["latitude"],
+        this.oldLocation["longitude"],
+        this.location["latitude"],
+        this.location["longitude"]
+      );
+    }
+    console.log(this.oldLocation);
+    if (meters > 5 || this.oldLocation == null) {
+      if (this.state.selectedRoute != 0 && this.state.location != null) {
+        this.oldLocation = this.location;
+        temp = JSON.parse(this.state.location);
+        var coords = temp["coords"];
+        var mockedVal = temp["mocked"];
+        var accuracy = coords["accuracy"];
 
-      var altitude = coords["altitude"];
-      var heading = coords["heading"];
-      var lat = coords["latitude"];
-      var lon = coords["longitude"];
-      var speed = coords["speed"];
-      var timestamp = temp["timestamp"];
-      var ts = new Date(timestamp);
-      ts.setMonth(ts.getMonth() + 1);
+        var altitude = coords["altitude"];
+        var heading = coords["heading"];
+        var lat = coords["latitude"];
+        var lon = coords["longitude"];
+        var speed = coords["speed"];
+        var timestamp = temp["timestamp"];
+        var ts = new Date(timestamp);
+        ts.setMonth(ts.getMonth() + 1);
 
-      var timeFormatted =
-        ts.getFullYear() +
-        "-" +
-        ts.getMonth() +
-        "-" +
-        ts.getDate() +
-        " " +
-        ts.getHours() +
-        ":" +
-        ts.getMinutes() +
-        ":" +
-        ts.getSeconds();
-      this.state.time = timeFormatted;
+        var timeFormatted =
+          ts.getFullYear() +
+          "-" +
+          ts.getMonth() +
+          "-" +
+          ts.getDate() +
+          " " +
+          ts.getHours() +
+          ":" +
+          ts.getMinutes() +
+          ":" +
+          ts.getSeconds();
+        this.state.time = timeFormatted;
 
-      var json = JSON.stringify({
-        route_id: this.state.selectedRoute,
-        timestamp: timeFormatted,
-        mocked: mockedVal,
-        heading: heading,
-        longitude: lon,
-        latitude: lat,
-        speed: speed,
-        accuracy: accuracy,
-        altitude: altitude
-      });
+        var json = JSON.stringify({
+          route_id: this.state.selectedRoute,
+          timestamp: timeFormatted,
+          mocked: mockedVal,
+          heading: heading,
+          longitude: lon,
+          latitude: lat,
+          speed: speed,
+          accuracy: accuracy,
+          altitude: altitude
+        });
 
-      fetch(
-        "https://next.hotspotpark.com/busTracking/submitBusTrackingInformation",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-          },
-          body: json
-        }
-      ).catch(error => {
-        console.error(error);
-      });
+        fetch(
+          "https://next.hotspotpark.com/busTracking/submitBusTrackingInformation",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: json
+          }
+        ).catch(error => {
+          console.error(error);
+        });
+      }
     }
   }
 
