@@ -238,9 +238,9 @@ export default class App extends Component {
       screen = (
         <View style={styles.container}>
           {/*<Text style={{color:'white'}}>Location: {this.state.location}</Text>*/}
-          <Text style={{ color: "white" }}>City ID: {this.cityID}</Text>
-          <Text style={{ color: "white" }}>Bus ID: {this.busID}</Text>
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: "white", fontSize:50 }}>City ID: {this.cityID}</Text>
+          <Text style={{ color: "white",fontSize:50 }}>Bus ID: {this.busID}</Text>
+          <Text style={{ color: "white", fontSize:30 }}>
             {this.message}
             {/*this.state.routelist.data[this.state.selectedRoute]*/}
           </Text>
@@ -249,11 +249,15 @@ export default class App extends Component {
             onValueChange={(itemValue, itemIndex) =>
               this.setRoute(itemValue, itemIndex)
             }
+            textTextStyle= {{
+              textAlign: "center"
+           }}
             style={{
-              height: 50,
-              width: 200,
+              height: 75,
+              width: 300,
               color: "black",
-              backgroundColor: "lightgray"
+              backgroundColor: "lightgray",
+              fontSize:50
             }}
           >
             <Picker.Item label="Select a Route" value="0" />
@@ -268,6 +272,7 @@ export default class App extends Component {
             })}
             <Picker.Item label="Out of Service" value="-1" />
           </Picker>
+          <Text style={{ color: "white", fontSize:30 }}>{(new Date().toLocaleString())}</Text>
           {/*<Button onPress={() => this.clearStorage()} title="Clear Storage" />*/}
         </View>
       );
