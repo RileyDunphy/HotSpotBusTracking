@@ -36,7 +36,8 @@ export default class App extends Component {
     time: null,
     routes: null,
     routelist: null,
-    selectedRoute: 0
+    selectedRoute: 0,
+    message: ""
   };
 
   haversineFormula(lat1, lon1, lat2, lon2) {
@@ -166,6 +167,7 @@ export default class App extends Component {
     console.log(this.oldLocation);
     if (meters > 5 || this.oldLocation == null) {
       if (this.state.selectedRoute > 0 && this.state.location != null) {
+        this.message = "Sending Location Data"
         this.oldLocation = this.location;
         temp = JSON.parse(this.state.location);
         var coords = temp["coords"];
@@ -221,6 +223,7 @@ export default class App extends Component {
           console.error(error);
         });
       }
+      else{this.message="";}
     }
   }
 
@@ -234,19 +237,24 @@ export default class App extends Component {
     if (value) {
       screen = (
         <View style={styles.container}>
-          <Text>Location: {this.state.location}</Text>
-          <Text>City ID: {this.cityID}</Text>
-          <Text>Bus ID: {this.busID}</Text>
-          <Text>
-            Selected Bus Route:
-            {this.state.routelist.data[this.state.selectedRoute]}
+          {/*<Text style={{color:'white'}}>Location: {this.state.location}</Text>*/}
+          <Text style={{ color: "white" }}>City ID: {this.cityID}</Text>
+          <Text style={{ color: "white" }}>Bus ID: {this.busID}</Text>
+          <Text style={{ color: "white" }}>
+            {this.message}
+            {/*this.state.routelist.data[this.state.selectedRoute]*/}
           </Text>
           <Picker
             selectedValue={this.state.selectedRoute}
             onValueChange={(itemValue, itemIndex) =>
               this.setRoute(itemValue, itemIndex)
             }
-            style={{ height: 50, width: 200 }}
+            style={{
+              height: 50,
+              width: 200,
+              color: "black",
+              backgroundColor: "lightgray"
+            }}
           >
             <Picker.Item label="Select a Route" value="0" />
             {Object.keys(this.state.routelist.data).map(key => {
@@ -260,7 +268,7 @@ export default class App extends Component {
             })}
             <Picker.Item label="Out of Service" value="-1" />
           </Picker>
-          <Button onPress={() => this.clearStorage()} title="Clear Storage" />
+          {/*<Button onPress={() => this.clearStorage()} title="Clear Storage" />*/}
         </View>
       );
       //if the cityID is not in storage, set the screen to the login page
@@ -268,14 +276,17 @@ export default class App extends Component {
       screen = (
         <View style={styles.container}>
           <View>
-            <Text>Please enter City ID and Bus ID</Text>
+            <Text style={{ color: "white" }}>
+              Please enter City ID and Bus ID
+            </Text>
           </View>
           <TextInput
             style={{
               height: 40,
               width: 100,
-              borderColor: "gray",
-              borderWidth: 1
+              borderColor: "white",
+              borderWidth: 1,
+              color: "white"
             }}
             onChangeText={text => (this.txtCityID = text)}
           />
@@ -283,8 +294,9 @@ export default class App extends Component {
             style={{
               height: 40,
               width: 100,
-              borderColor: "gray",
-              borderWidth: 1
+              borderColor: "white",
+              borderWidth: 1,
+              color: "white"
             }}
             onChangeText={text => (this.txtBusID = text)}
           />
@@ -302,7 +314,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "black"
   },
   welcome: {
     fontSize: 20,
