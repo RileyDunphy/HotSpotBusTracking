@@ -9,8 +9,9 @@ import {
   Picker,
   Alert,
   AsyncStorage,
-  Geolocation
+  TouchableOpacity
 } from "react-native";
+import DialogInput from "react-native-dialog-input";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
@@ -36,8 +37,7 @@ export default class App extends Component {
     time: null,
     routes: null,
     routelist: null,
-    selectedRoute: 0,
-    message: ""
+    selectedRoute: 0
   };
 
   haversineFormula(lat1, lon1, lat2, lon2) {
@@ -153,11 +153,6 @@ export default class App extends Component {
   //author josh
   setRoute(routeValue, routeIndex) {
     this.state.selectedRoute = routeValue;
-    if (routeValue > 0) {
-      this.message = "Now Tracking: ";
-    } else if ((routeValue = -1)) {
-      this.message = "Out of Service";
-    }
   }
   publishLocationData() {
     if (this.oldLocation != null) {
@@ -223,8 +218,6 @@ export default class App extends Component {
         ).catch(error => {
           console.error(error);
         });
-      } else {
-        this.message = "";
       }
     }
   }
@@ -239,21 +232,42 @@ export default class App extends Component {
     if (value) {
       screen = (
         <View style={styles.container}>
-          <Text
+          <TouchableOpacity
             style={{
-              color: "white",
-              fontSize: 50,
               position: "absolute",
               bottom: 0,
               right: 0
             }}
+            onPress={this.clearStorage}
           >
-            {this.busID}
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20
+              }}
+            >
+              {this.busID} - Change
+            </Text>
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20
+            }}
+          >
+            Current Route
           </Text>
-          <Text style={{ color: "white", fontSize: 50,
-    justifyContent: "center",
-    alignItems: "center", textAlign:"center"  }}>
-            {this.message}
+          <Text
+            style={{
+              color: "white",
+              fontSize: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              borderBottomWidth: 80,
+              padding:20
+            }}
+          >
             {this.state.routelist.data[this.state.selectedRoute]}
           </Text>
           <Picker
@@ -289,7 +303,7 @@ export default class App extends Component {
       screen = (
         <View style={styles.container}>
           <View>
-            <Text style={{ color: "white"}}>
+            <Text style={{ color: "white" }}>
               Please enter City ID and Bus ID
             </Text>
           </View>
