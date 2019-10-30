@@ -37,7 +37,8 @@ export default class App extends Component {
     time: null,
     routes: null,
     routelist: null,
-    selectedRoute: 0
+    selectedRoute: 0,
+    offline: 1
   };
 
   haversineFormula(lat1, lon1, lat2, lon2) {
@@ -153,6 +154,11 @@ export default class App extends Component {
   //author josh
   setRoute(routeValue, routeIndex) {
     this.state.selectedRoute = routeValue;
+    if (routeValue > 0) {
+      this.offline = 0;
+    } else if (routeValue <= 0) {
+      this.offline = 1;
+    }
   }
   publishLocationData() {
     if (this.oldLocation != null) {
@@ -202,7 +208,9 @@ export default class App extends Component {
           latitude: lat,
           speed: speed,
           accuracy: accuracy,
-          altitude: altitude
+          altitude: altitude,
+          bus_id: this.busID,
+          offline: this.offline
         });
 
         fetch(
@@ -265,7 +273,7 @@ export default class App extends Component {
               alignItems: "center",
               textAlign: "center",
               borderBottomWidth: 80,
-              padding:20
+              padding: 20
             }}
           >
             {this.state.routelist.data[this.state.selectedRoute]}
