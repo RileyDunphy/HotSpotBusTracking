@@ -39,8 +39,24 @@ export default class App extends Component {
     routelist: null,
     selectedRoute: 0,
     offline: 1,
-    busIDScreen: false
+    busIDScreen: false,
+    signedIn: false
   };
+
+  componentDidMount() {
+    AsyncStorage.getItem("cityID")
+      .then(value => {
+        if (value !== null) {
+          this.signedIn = true;
+        }
+      })
+      .catch(error => console.error("AsyncStorage error: " + error.message))
+      .done();
+    this.getID();
+    if (this.state.routes == null || this.state.routes == undefined) {
+      this.getCityRoutes(this.state.cityID); //this method sets the routes for the city
+    }
+  }
 
   haversineFormula(lat1, lon1, lat2, lon2) {
     // generally used geo measurement function
@@ -126,7 +142,6 @@ export default class App extends Component {
   getID = async () => {
     this.cityID = await AsyncStorage.getItem("cityID");
     this.busID = await AsyncStorage.getItem("busID");
-    return this.cityID;
   };
 
   clearStorage = async () => {
@@ -145,23 +160,6 @@ export default class App extends Component {
     this.busIDScreen = true;
   };
 
-  checkUserSignedIn() {
-    try {
-      this.getID();
-      let value = this.cityID;
-      //if the value is not null or undefined
-      // (there is something there) then true
-      if (value != undefined && value != null) {
-        return true;
-      }
-      //else storage is empty then false
-      else {
-        return false;
-      }
-    } catch (error) {
-      alert.show("Error getting data");
-    }
-  }
   //author josh
   setRoute(routeValue, routeIndex) {
     this.state.selectedRoute = routeValue;
@@ -243,10 +241,6 @@ export default class App extends Component {
 
   render() {
     let screen;
-    value = this.checkUserSignedIn();
-    if (this.state.routes == null || this.state.routes == undefined) {
-      this.getCityRoutes(this.state.cityID); //this method sets the routes for the city
-    }
     //if the cityID is in storage, set the screen to the index
     if (this.busIDScreen == true) {
       screen = (
@@ -267,7 +261,7 @@ export default class App extends Component {
           <Button onPress={() => this.setID()} title="Change ID" />
         </View>
       );
-    } else if (value) {
+    } else if (this.signedIn) {
       screen = (
         <View style={styles.container}>
           <TouchableOpacity
@@ -337,7 +331,7 @@ export default class App extends Component {
         </View>
       );
       //if the cityID is not in storage, set the screen to the login page
-    } else if (!value) {
+    } else if (!this.signedIn) {
       screen = (
         <View style={styles.container}>
           <View>
