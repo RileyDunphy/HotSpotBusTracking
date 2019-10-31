@@ -38,7 +38,8 @@ export default class App extends Component {
     routes: null,
     routelist: null,
     selectedRoute: 0,
-    offline: 1
+    offline: 1,
+    busIDScreen: false
   };
 
   haversineFormula(lat1, lon1, lat2, lon2) {
@@ -113,10 +114,13 @@ export default class App extends Component {
   };
 
   setID = async () => {
-    await AsyncStorage.setItem("cityID", this.txtCityID);
+    if (this.busIDScreen == false) {
+      await AsyncStorage.setItem("cityID", this.txtCityID);
+      this.cityID = await AsyncStorage.getItem("cityID");
+    }
     await AsyncStorage.setItem("busID", this.txtBusID);
-    this.cityID = await AsyncStorage.getItem("cityID");
     this.busID = await AsyncStorage.getItem("busID");
+    this.busIDScreen = false;
   };
 
   getID = async () => {
@@ -132,6 +136,13 @@ export default class App extends Component {
     this.busID = await AsyncStorage.getItem("busID");
     this.txtCityID = await AsyncStorage.getItem("cityID");
     this.txtBusID = await AsyncStorage.getItem("busID");
+  };
+
+  clearBusId = async () => {
+    await AsyncStorage.removeItem("busID");
+    this.busID = await AsyncStorage.getItem("busID");
+    this.txtBusID = await AsyncStorage.getItem("busID");
+    this.busIDScreen = true;
   };
 
   checkUserSignedIn() {
@@ -237,7 +248,26 @@ export default class App extends Component {
       this.getCityRoutes(this.state.cityID); //this method sets the routes for the city
     }
     //if the cityID is in storage, set the screen to the index
-    if (value) {
+    if (this.busIDScreen == true) {
+      screen = (
+        <View style={styles.container}>
+          <View>
+            <Text style={{ color: "white" }}>Please enter Bus ID</Text>
+          </View>
+          <TextInput
+            style={{
+              height: 40,
+              width: 100,
+              borderColor: "white",
+              borderWidth: 1,
+              color: "white"
+            }}
+            onChangeText={text => (this.txtBusID = text)}
+          />
+          <Button onPress={() => this.setID()} title="Change ID" />
+        </View>
+      );
+    } else if (value) {
       screen = (
         <View style={styles.container}>
           <TouchableOpacity
@@ -246,7 +276,7 @@ export default class App extends Component {
               bottom: 0,
               right: 0
             }}
-            onPress={this.clearStorage}
+            onPress={this.clearBusId}
           >
             <Text
               style={{
