@@ -15,7 +15,7 @@ import DialogInput from "react-native-dialog-input";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
-import { TaskManager } from "expo";
+import { TaskManager, Updates } from "expo";
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -58,6 +58,16 @@ export default class App extends Component {
     }
   }
 
+  UpdateApp() {
+    var today = new Date();
+    var checkHour = today.getHours();
+    var checkMinute = today.getMinutes();
+
+    if (checkHour == 23 && checkMinute == 30) {
+      Updates.reload();
+    }
+  }
+
   haversineFormula(lat1, lon1, lat2, lon2) {
     // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -81,6 +91,7 @@ export default class App extends Component {
         this.setState({ location });
         this.timeConvert();
         this.publishLocationData();
+        this.UpdateApp();
       },
       error => Alert.alert(error.message),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
