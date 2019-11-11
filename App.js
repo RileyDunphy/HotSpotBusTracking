@@ -148,6 +148,7 @@ export default class App extends Component {
     await AsyncStorage.setItem("busID", this.txtBusID);
     this.busID = await AsyncStorage.getItem("busID");
     this.busIDScreen = false;
+    this.signedIn = true;
   };
 
   getID = async () => {
