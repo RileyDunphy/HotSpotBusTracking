@@ -25,6 +25,8 @@
 <script>
 
     function initMap() {
+        //Get the route id from URL
+        let searchParams = new URLSearchParams(window.location.search);
         /* Map */
         // Instantiate the Map
         var mapOptions = {
@@ -100,7 +102,9 @@ function mapFeature(feature,index,arr){
     //console.log(feature.geometry.coordinates);
     var transitLayer = new google.maps.TransitLayer();
     transitLayer.setMap(map);
-    map.data.addGeoJson(feature);
+    if(feature.properties.Route==searchParams.get('route_id')){
+        map.data.addGeoJson(feature);
+    }
 };
 
 $.ajax(settings).done(function (response) {
@@ -135,7 +139,7 @@ $.ajax(settings).done(function (response) {
             second: '2-digit'
         })
     );
-
+    
 
 
 
