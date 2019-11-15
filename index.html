@@ -1,150 +1,183 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>HotSpot Bus Tracker</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,700&display=swap" rel="stylesheet">
-</head>
-<div id="wrapper">
-    <div id="map" class="map-responsive"></div>
+    <head>
+        <title>HotSpot Bus Tracker</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,700&display=swap" rel="stylesheet">
+    </head>
+    <div id="wrapper">
+        <div id="map" class="map-responsive"></div>
 
-    <div id="legend">
-        <h2> HotSpot Bus Tracker </h2>
+        <div id="legend">
+            <h2> HotSpot Bus Tracker </h2>
 
-        <div class="inner">
-            <small class="timestamp">Last Updated: <span></span></small>
+            <div class="inner">
+                <small class="timestamp">Last Updated: <span></span></small>
+            </div>
+
+            <div class="toggler"></div>
         </div>
-
-        <div class="toggler"></div>
     </div>
-</div>
-<script>
+    <script>
 
-    function initMap() {
-        //Get the route id from URL
+        
         let searchParams = new URLSearchParams(window.location.search);
-        /* Map */
-        // Instantiate the Map
-        var mapOptions = {
-            zoom: 17,
-            center: new google.maps.LatLng('45.962544', '-66.641998'),
-            mapTypeControlOptions: {
-                mapTypeIds: [google.maps.MapTypeId.ROADMAP]
-            },
-            disableDefaultUI: true,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scaleControl: true,
-            styles: [
-                {
-                    "featureType": "administrative",
-                    "elementType": "geometry",
-                    "stylers": [
-                        {"visibility": "off"}
-                    ]
-                }, {
-                    "featureType": "poi",
-                    "stylers": [
-                        {"visibility": "off"}
-                    ]
-                }, {
-                    "featureType": "road",
-                    "elementType": "labels.icon",
-                    "stylers": [
-                        {"visibility": "off"}
-                    ]
-                }, {
-                    "featureType": "transit",
-                    "stylers": [
-                        {"visibility": "on"}
-                    ]
-                }, {
-                    "featureType": "water",
-                    "elementType": "geometry.fill",
-                    "stylers": [
-                        {"color": "#dce9f1"}
-                    ]
+            var form = new FormData();
+            form.append("route_id", searchParams.get("route_id"));
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://next.hotspotpark.com/busTracking/getLastRecordForRoute",
+                "method": "GET",
+                "headers": {
+                    "User-Agent": "PostmanRuntime/7.19.0",
+                    "Accept": "*/*",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "a8b13895-a6b3-4689-8cab-e1dd5d5551d2,0120b8e8-c7be-4952-ab8e-3f8bf01efd5e",
+                    "Host": "next.hotspotpark.com",
+                    "Content-Type": "multipart/form-data; boundary=--------------------------680886269530051625009019",
+                    "Accept-Encoding": "gzip, deflate",
+                    "Cookie": "CAKEPHP=92332c8bf386b319a2bdec06d37c131a",
+                    "Content-Length": "164",
+                    "Connection": "keep-alive",
+                    "cache-control": "no-cache"
                 },
-                {
-                    "featureType": "transit.line",
-                    "elementType": "geometry.fill",
-                    "stylers": [
-                        { "visibility": "on" }
-                        ]
+                "processData": false,
+                "contentType": false,
+                "mimeType": "multipart/form-data",
+                "data": form
+            }
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+            });
+
+            function initMap() {
+                
+                /* Map */
+                // Instantiate the Map
+                var mapOptions = {
+                    zoom: 17,
+                    center: new google.maps.LatLng('45.962544', '-66.641998'),
+                    mapTypeControlOptions: {
+                        mapTypeIds: [google.maps.MapTypeId.ROADMAP]
+                    },
+                    disableDefaultUI: true,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    scaleControl: true,
+                    styles: [
+                        {
+                            "featureType": "administrative",
+                            "elementType": "geometry",
+                            "stylers": [
+                                {"visibility": "off"}
+                            ]
+                        }, {
+                            "featureType": "poi",
+                            "stylers": [
+                                {"visibility": "off"}
+                            ]
+                        }, {
+                            "featureType": "road",
+                            "elementType": "labels.icon",
+                            "stylers": [
+                                {"visibility": "off"}
+                            ]
+                        }, {
+                            "featureType": "transit",
+                            "stylers": [
+                                {"visibility": "on"}
+                            ]
+                        }, {
+                            "featureType": "water",
+                            "elementType": "geometry.fill",
+                            "stylers": [
+                                {"color": "#dce9f1"}
+                            ]
+                        },
+                        {
+                            "featureType": "transit.line",
+                            "elementType": "geometry.fill",
+                            "stylers": [
+                                {"visibility": "on"}
+                            ]
+                        }
+                    ]
+                };
+                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://opendata.arcgis.com/datasets/edee18d4f82d4bbdbd649858c796bbb3_0.geojson",
+                    "method": "GET",
+                    "headers": {
+                        "User-Agent": "PostmanRuntime/7.19.0",
+                        "Accept": "*/*",
+                        "Cache-Control": "no-cache",
+                        "Postman-Token": "9ec5d9bb-5645-4fcd-8ed0-5e2ad136029d,7d5d4783-b322-4e8c-bffd-86d35ca9dd22",
+                        "Host": "opendata.arcgis.com",
+                        "Accept-Encoding": "gzip, deflate",
+                        "Connection": "keep-alive",
+                        "cache-control": "no-cache"
+                    }
                 }
-            ]
-        };
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                function mapFeature(feature, index, arr) {
+                    //console.log(feature.properties.OBJECTID);
+                    console.log(feature.properties.Route);
+                    //console.log(feature.properties.Shape__Length)
+                    //console.log(feature.geometry.coordinates);
+                    var transitLayer = new google.maps.TransitLayer();
+                    transitLayer.setMap(map);
+                    if (feature.properties.Route == searchParams.get('route_id')) {
+                        map.data.addGeoJson(feature);
+                    }
+                }
+                ;
 
-        var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://opendata.arcgis.com/datasets/edee18d4f82d4bbdbd649858c796bbb3_0.geojson",
-    "method": "GET",
-    "headers": {
-    "User-Agent": "PostmanRuntime/7.19.0",
-    "Accept": "*/*",
-    "Cache-Control": "no-cache",
-    "Postman-Token": "9ec5d9bb-5645-4fcd-8ed0-5e2ad136029d,7d5d4783-b322-4e8c-bffd-86d35ca9dd22",
-    "Host": "opendata.arcgis.com",
-    "Accept-Encoding": "gzip, deflate",
-    "Connection": "keep-alive",
-    "cache-control": "no-cache"
-  }
-}
-function mapFeature(feature,index,arr){
-    //console.log(feature.properties.OBJECTID);
-    console.log(feature.properties.Route);
-    //console.log(feature.properties.Shape__Length)
-    //console.log(feature.geometry.coordinates);
-    var transitLayer = new google.maps.TransitLayer();
-    transitLayer.setMap(map);
-    if(feature.properties.Route==searchParams.get('route_id')){
-        map.data.addGeoJson(feature);
-    }
-};
+                $.ajax(settings).done(function (response) {
+                    //console.log(response.type);
+                    //console.log(response.features[0]);
+                    var featureArray = response.features;
+                    //console.log(featureArray);
+                    featureArray.forEach(mapFeature);
+                });
 
-$.ajax(settings).done(function (response) {
-    //console.log(response.type);
-    //console.log(response.features[0]);
-    var featureArray=response.features;
-    //console.log(featureArray);
-    featureArray.forEach(mapFeature);
-});
+            }
+            // Get current time
+            var d = new Date();
+            var dy = d.getDay();
+            var hr = d.getHours();
+            console.log(dy);
+            console.log(hr);
+            /* UI */
+            // Legend toggle
+            $('#legend h2').click(function () {
+                $(this).siblings('.inner').slideToggle('fast');
+                $('.toggler').toggleClass('expanded');
+            });
 
-    }
-        // Get current time
-        var d = new Date();
-        var dy = d.getDay();
-        var hr = d.getHours();
-        console.log(dy);
-        console.log(hr);
-    /* UI */
-    // Legend toggle
-    $('#legend h2').click(function() {
-        $(this).siblings('.inner').slideToggle('fast');
-        $('.toggler').toggleClass('expanded');
-    });
-
-    // Update timestamp within Legend
-    $('.timestamp span').text(
-        new Date().toLocaleDateString('en-US', {
-            day:'numeric',
-            month:'short',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        })
-    );
-    
+            // Update timestamp within Legend
+            $('.timestamp span').text(
+                    new Date().toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            })
+                    );
 
 
 
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmOrgVMGP9nR-9OQ_cLuhugkAvcQZmFXI&callback=initMap"></script>
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmOrgVMGP9nR-9OQ_cLuhugkAvcQZmFXI&callback=initMap"></script>
 </body>
 <style type="text/css">
     h2 {
