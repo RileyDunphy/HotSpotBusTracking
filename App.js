@@ -122,7 +122,7 @@ export default class App extends Component {
   //author Josh
   getCityRoutes = async () => {
     var city = await AsyncStorage.getItem("cityID");
-    fetch("https://next.hotspotpark.com/busTracking/getRoutesForCity", {
+    fetch("https://hotspotparking.com/busTracking/getRoutesForCity", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -235,7 +235,7 @@ export default class App extends Component {
         });
 
         fetch(
-          "https://next.hotspotpark.com/busTracking/submitBusTrackingInformation",
+          "https://hotspotparking.com/busTracking/submitBusTrackingInformation",
           {
             method: "POST",
             headers: {
@@ -258,7 +258,10 @@ export default class App extends Component {
       screen = (
         <View style={styles.container}>
           <View>
-            <Text style={{ color: "white" }}>Please enter Bus ID</Text>
+            <Text style={{
+              color: "white",
+              fontSize: 40
+            }}>Please enter Bus ID</Text>
           </View>
           <TextInput
             style={{
@@ -266,7 +269,8 @@ export default class App extends Component {
               width: 100,
               borderColor: "white",
               borderWidth: 1,
-              color: "white"
+              color: "white",
+              fontSize: 40
             }}
             onChangeText={text => (this.txtBusID = text)}
           />
@@ -287,7 +291,7 @@ export default class App extends Component {
             <Text
               style={{
                 color: "white",
-                fontSize: 20
+                fontSize: 40
               }}
             >
               {this.busID} - Change
@@ -296,7 +300,7 @@ export default class App extends Component {
           <Text
             style={{
               color: "white",
-              fontSize: 20
+              fontSize: 40
             }}
           >
             Current Route
@@ -304,7 +308,7 @@ export default class App extends Component {
           <Text
             style={{
               color: "white",
-              fontSize: 50,
+              fontSize: 70,
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
@@ -324,7 +328,7 @@ export default class App extends Component {
               width: 300,
               color: "black",
               backgroundColor: "lightgray",
-              fontSize: 50
+              fontSize: 70
             }}
           >
             <Picker.Item label="Select a Route" value="0" />
@@ -357,7 +361,8 @@ export default class App extends Component {
               width: 100,
               borderColor: "white",
               borderWidth: 1,
-              color: "white"
+              color: "white",
+              fontSize: 40
             }}
             onChangeText={text => (this.txtCityID = text)}
           />
@@ -367,7 +372,8 @@ export default class App extends Component {
               width: 100,
               borderColor: "white",
               borderWidth: 1,
-              color: "white"
+              color: "white",
+              fontSize: 40
             }}
             onChangeText={text => (this.txtBusID = text)}
           />
