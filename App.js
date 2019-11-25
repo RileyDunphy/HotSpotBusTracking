@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  ScrollView,
   Platform,
   StyleSheet,
   Button,
@@ -16,6 +17,7 @@ import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { TaskManager, Updates } from "expo";
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -40,7 +42,8 @@ export default class App extends Component {
     selectedRoute: 0,
     offline: 1,
     busIDScreen: false,
-    signedIn: false
+    signedIn: false,
+    routeScreen: false,
   };
 
   componentDidMount() {
@@ -173,13 +176,14 @@ export default class App extends Component {
   };
 
   //author josh
-  setRoute(routeValue, routeIndex) {
+  setRoute(routeValue) {
     this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
       this.offline = 0;
     } else if (routeValue <= 0) {
       this.offline = 1;
     }
+    this.routeScreen = false;
   }
   publishLocationData() {
     if (this.oldLocation != null) {
@@ -252,6 +256,7 @@ export default class App extends Component {
   }
 
   render() {
+
     let screen;
     //if the cityID is in storage, set the screen to the index
     if (this.busIDScreen == true) {
@@ -277,7 +282,29 @@ export default class App extends Component {
           <Button onPress={() => this.setID()} title="Change ID" />
         </View>
       );
-    } else if (this.signedIn) {
+    } else if (this.routeScreen) {
+      screen = (
+        <View style={styles.container}>
+          <Text>{"\n"}{"\n"}</Text>
+          <ScrollView>
+            <RadioForm
+              labelColor={'white'}
+              selectedLabelColor={'lightblue'}
+              labelStyle={{ fontSize: 30, padding: 15 }}
+              initial={this.state.selectedRoute}
+              radio_props={Object.keys(this.state.routelist.data).map(key => {
+                return (
+                  { label: this.state.routelist.data[key], value: key }
+                );
+              })}
+              onPress={(value) =>
+                this.setRoute(value)}
+            />
+          </ScrollView>
+        </View>
+      );
+    }
+    else if (this.signedIn) {
       screen = (
         <View style={styles.container}>
           <TouchableOpacity
@@ -312,38 +339,39 @@ export default class App extends Component {
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-              borderBottomWidth: 80,
+              borderBottomWidth: 20,
               padding: 20
             }}
           >
             {this.state.routelist.data[this.state.selectedRoute]}
           </Text>
-          <Picker
-            selectedValue={0}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setRoute(itemValue, itemIndex)
-            }
-            style={{
-              height: 75,
-              width: 300,
-              color: "black",
-              backgroundColor: "lightgray",
-              fontSize: 70
-            }}
+          <TouchableOpacity
+            onPress={() => this.routeScreen = true}
           >
-            <Picker.Item label="Select a Route" value="0" />
-            {Object.keys(this.state.routelist.data).map(key => {
-              return (
-                <Picker.Item
-                  label={this.state.routelist.data[key]}
-                  value={key}
-                  key={key}
-                />
-              );
-            })}
-            <Picker.Item label="Out of Service" value="-1" />
-          </Picker>
-          {/*<Button onPress={() => this.clearStorage()} title="Clear Storage" />*/}
+            <Text
+              style={{
+                color: "black",
+                backgroundColor:"white",
+                fontSize: 40
+              }}
+            >
+              &nbsp;Change Route&nbsp;
+            </Text>
+          </TouchableOpacity>
+          <Text>{"\n"}</Text>
+          <TouchableOpacity
+            onPress={this.setRoute(0)}
+          >
+            <Text
+              style={{
+                color: "black",
+                backgroundColor:"white",
+                fontSize: 40
+              }}
+            >
+              &nbsp;Out of Service&nbsp;
+            </Text>
+          </TouchableOpacity>
         </View>
       );
       //if the cityID is not in storage, set the screen to the login page
