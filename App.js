@@ -350,10 +350,11 @@ export default class App extends Component {
           >
             <Text
               style={{
-                color: "black",
-                backgroundColor:"white",
+                color: "white",
+                backgroundColor:"black",
                 fontSize: 40,
-                borderColor:"black"
+                borderColor:"white",
+                borderWidth:2
               }}
             >
               &nbsp;Change Route&nbsp;
@@ -365,10 +366,11 @@ export default class App extends Component {
           >
             <Text
               style={{
-                color: "black",
-                backgroundColor:"white",
+                color: "white",
+                backgroundColor:"black",
                 fontSize: 40,
-                borderColor:"black"
+                borderColor:"white",
+                borderWidth:2
               }}
             >
               &nbsp;Out of Service&nbsp;
