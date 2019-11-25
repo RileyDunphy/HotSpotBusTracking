@@ -352,7 +352,8 @@ export default class App extends Component {
               style={{
                 color: "black",
                 backgroundColor:"white",
-                fontSize: 40
+                fontSize: 40,
+                borderColor:"black"
               }}
             >
               &nbsp;Change Route&nbsp;
@@ -366,7 +367,8 @@ export default class App extends Component {
               style={{
                 color: "black",
                 backgroundColor:"white",
-                fontSize: 40
+                fontSize: 40,
+                borderColor:"black"
               }}
             >
               &nbsp;Out of Service&nbsp;
