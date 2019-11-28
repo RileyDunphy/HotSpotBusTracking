@@ -305,6 +305,7 @@ export default class App extends Component {
       );
     }
     else if (this.signedIn) {
+      console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
           <TouchableOpacity
@@ -362,7 +363,7 @@ export default class App extends Component {
           </TouchableOpacity>
           <Text>{"\n"}</Text>
           <TouchableOpacity
-            onPress={this.setRoute(0)}
+            onPress={()=>this.setRoute(0)}
           >
             <Text
               style={{
