@@ -33,7 +33,7 @@
             /* Map */
             // Instantiate the Map
             var mapOptions = {
-                zoom:  13,
+                zoom: 13,
                 center: new google.maps.LatLng('45.962544', '-66.641998'),
                 mapTypeControlOptions: {
                     mapTypeIds: [google.maps.MapTypeId.ROADMAP]

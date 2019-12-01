@@ -33,7 +33,7 @@
             /* Map */
             // Instantiate the Map
             var mapOptions = {
-                zoom:  13,
+                zoom: 17,
                 center: new google.maps.LatLng('45.962544', '-66.641998'),
                 mapTypeControlOptions: {
                     mapTypeIds: [google.maps.MapTypeId.ROADMAP]
@@ -82,7 +82,7 @@
             var map = new google.maps.Map(document.getElementById('map'), mapOptions);
             marker = new google.maps.Marker({
                 map: map,
-                title: '11S Prospect',
+                title: '13S Prospect',
                 icon: 'marker.png'
             });
             var settings = {
@@ -109,7 +109,7 @@
                 //console.log(feature.geometry.coordinates);
                 var transitLayer = new google.maps.TransitLayer();
                 transitLayer.setMap(map);
-                if (feature.properties.Route == "10N-11S") {
+                if (feature.properties.Route == "12N -13S") {
                     map.data.addGeoJson(feature);
                 }
             };
@@ -148,7 +148,7 @@
 
             $.ajax({
                 url: 'update.php', //php          
-                data: "route_id=67", //the data
+                data: "route_id=69", //the data
                 dataType: 'json', //data format   
                 success: function(data) {
                     //on receive of reply

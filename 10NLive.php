@@ -33,7 +33,7 @@
             /* Map */
             // Instantiate the Map
             var mapOptions = {
-                zoom:  13,
+                zoom: 13,
                 center: new google.maps.LatLng('45.962544', '-66.641998'),
                 mapTypeControlOptions: {
                     mapTypeIds: [google.maps.MapTypeId.ROADMAP]
@@ -82,7 +82,7 @@
             var map = new google.maps.Map(document.getElementById('map'), mapOptions);
             marker = new google.maps.Marker({
                 map: map,
-                title: '11S Prospect',
+                title: '10N Carlisle',
                 icon: 'marker.png'
             });
             var settings = {
@@ -148,7 +148,7 @@
 
             $.ajax({
                 url: 'update.php', //php          
-                data: "route_id=67", //the data
+                data: "route_id=66", //the data
                 dataType: 'json', //data format   
                 success: function(data) {
                     //on receive of reply
