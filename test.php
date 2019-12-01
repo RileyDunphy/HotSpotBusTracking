@@ -25,45 +25,11 @@
         </div>
     </div>
     <script>
+        var marker;
+
         let searchParams = new URLSearchParams(window.location.search);
-        $(document).ready(function() {
-            var form = new FormData();
-            form.append("route_id", searchParams.get("route_id"));
-
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://next.hotspotpark.com/busTracking/getLastRecordForRoute",
-                "method": "POST",
-                "headers": {
-                    "User-Agent": "PostmanRuntime/7.19.0",
-                    "Accept": "*/*",
-                    "Cache-Control": "no-cache",
-                    "Postman-Token": "a8b13895-a6b3-4689-8cab-e1dd5d5551d2,0120b8e8-c7be-4952-ab8e-3f8bf01efd5e",
-                    "Host": "next.hotspotpark.com",
-                    "Content-Type": "multipart/form-data; boundary=--------------------------680886269530051625009019",
-                    "Accept-Encoding": "gzip, deflate",
-                    "Cookie": "CAKEPHP=92332c8bf386b319a2bdec06d37c131a",
-                    "Content-Length": "164",
-                    "Connection": "keep-alive",
-                    "cache-control": "no-cache",
-                },
-                "processData": false,
-                "contentType": false,
-                "mimeType": "multipart/form-data",
-                "data": form
-            }
-
-            $.ajax(settings).done(function(response) {
-                console.log("hello");
-            });
-        });
 
         function initMap() {
-            var myLatLng = {
-                lat: 45.9838422,
-                lng: -66.6322581
-            };
             /* Map */
             // Instantiate the Map
             var mapOptions = {
@@ -114,8 +80,7 @@
                 ]
             };
             var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            var marker = new google.maps.Marker({
-                position: myLatLng,
+            marker = new google.maps.Marker({
                 map: map,
                 title: 'Hello World!'
             });
@@ -143,16 +108,13 @@
                 //console.log(feature.geometry.coordinates);
                 var transitLayer = new google.maps.TransitLayer();
                 transitLayer.setMap(map);
-                if (feature.properties.Route == searchParams.get('route_id')) {
+                if (feature.properties.Route == "10N-11S") {
                     map.data.addGeoJson(feature);
                 }
             };
 
             $.ajax(settings).done(function(response) {
-                //console.log(response.type);
-                //console.log(response.features[0]);
                 var featureArray = response.features;
-                //console.log(featureArray);
                 featureArray.forEach(mapFeature);
             });
 
@@ -180,40 +142,28 @@
                 second: '2-digit'
             })
         );
+
+        function update() {
+
+            $.ajax({
+                url: 'update.php', //php          
+                data: "route_id=67", //the data
+                dataType: 'json', //data format   
+                success: function(data) {
+                    //on receive of reply
+                    //alert(data);
+                    var json = JSON.parse(data);
+                    marker.setPosition(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
+                }
+            });
+        }
+
+        $(document).ready(update); // Call on page load
+
+
+        setInterval(update, 5000); //every 5 secs
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmOrgVMGP9nR-9OQ_cLuhugkAvcQZmFXI&callback=initMap"></script>
-    <?php
-    //
-    // A very simple PHP example that sends a HTTP POST to a remote site
-    //
-
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, "https://next.hotspotpark.com/busTracking/getLastRecordForRoute");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt(
-        $ch,
-        CURLOPT_POSTFIELDS,
-        "route_id=1"
-    );
-
-    // In real life you should use something like:
-    // curl_setopt($ch, CURLOPT_POSTFIELDS, 
-    //          http_build_query(array('postvar1' => 'value1')));
-    // Receive server response ...
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $server_output = curl_exec($ch);
-    $err = curl_error($ch);
-
-    curl_close($ch);
-
-    if ($err) {
-        echo "cURL Error #:" . $err;
-    } else {
-        echo $response;
-    }
-    ?>
 </body>
 <style type="text/css">
     h2 {
