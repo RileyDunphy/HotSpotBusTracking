@@ -208,12 +208,11 @@ export default class App extends Component {
         var speed = coords["speed"];
         var timestamp = temp["timestamp"];
         var ts = new Date(timestamp);
-        ts.setMonth(ts.getMonth() + 1);
 
         var timeFormatted =
           ts.getFullYear() +
           "-" +
-          ts.getMonth() +
+          (ts.getMonth()+1) +
           "-" +
           ts.getDate() +
           " " +
