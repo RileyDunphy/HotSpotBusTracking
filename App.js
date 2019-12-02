@@ -44,6 +44,7 @@ export default class App extends Component {
     busIDScreen: false,
     signedIn: false,
     routeScreen: false,
+    date: null
   };
 
   componentDidMount() {
@@ -121,6 +122,29 @@ export default class App extends Component {
         ts.getSeconds();
       this.state.time = timeFormatted;
     }
+  }
+
+  showTime() {
+    var date = new Date();
+    var h = date.getHours(); // 0 - 23
+    var m = date.getMinutes(); // 0 - 59
+    var s = date.getSeconds(); // 0 - 59
+    var session = "AM";
+
+    if (h == 0) {
+      h = 12;
+    }
+
+    if (h > 12) {
+      h = h - 12;
+      session = "PM";
+    }
+
+    h = (h < 10) ? "0" + h : h;
+    m = (m < 10) ? "0" + m : m;
+    s = (s < 10) ? "0" + s : s;
+
+    return h + ":" + m + " " + session;
   }
   //author Josh
   getCityRoutes = async () => {
@@ -212,7 +236,7 @@ export default class App extends Component {
         var timeFormatted =
           ts.getFullYear() +
           "-" +
-          (ts.getMonth()+1) +
+          (ts.getMonth() + 1) +
           "-" +
           ts.getDate() +
           " " +
@@ -304,9 +328,19 @@ export default class App extends Component {
       );
     }
     else if (this.signedIn) {
+
       console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
+          <Text style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            color: "white",
+            fontSize: 40
+          }}>
+            {"\n"}{this.showTime()}
+          </Text>
           <TouchableOpacity
             style={{
               position: "absolute",
@@ -318,7 +352,7 @@ export default class App extends Component {
             <Text
               style={{
                 color: "white",
-                fontSize: 40
+                fontSize: 30
               }}
             >
               {this.busID} - Change
@@ -351,10 +385,10 @@ export default class App extends Component {
             <Text
               style={{
                 color: "white",
-                backgroundColor:"black",
+                backgroundColor: "black",
                 fontSize: 40,
-                borderColor:"white",
-                borderWidth:2
+                borderColor: "white",
+                borderWidth: 2
               }}
             >
               &nbsp;Change Route&nbsp;
@@ -362,15 +396,15 @@ export default class App extends Component {
           </TouchableOpacity>
           <Text>{"\n"}</Text>
           <TouchableOpacity
-            onPress={()=>this.setRoute(0)}
+            onPress={() => this.setRoute(0)}
           >
             <Text
               style={{
                 color: "white",
-                backgroundColor:"black",
+                backgroundColor: "black",
                 fontSize: 40,
-                borderColor:"white",
-                borderWidth:2
+                borderColor: "white",
+                borderWidth: 2
               }}
             >
               &nbsp;Out of Service&nbsp;
