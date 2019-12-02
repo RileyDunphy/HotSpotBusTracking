@@ -335,9 +335,8 @@ export default class App extends Component {
           <Text style={{
             position: "absolute",
             top: 0,
-            right: 0,
             color: "white",
-            fontSize: 40
+            fontSize: 60
           }}>
             {"\n"}{this.showTime()}
           </Text>
