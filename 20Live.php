@@ -101,7 +101,7 @@
                     "cache-control": "no-cache"
                 }
             }
-
+            var shapes = [];
             var path = [
                 new google.maps.LatLng(45.96576635056045, -66.76961393351269),
                 new google.maps.LatLng(45.96556499808119, -66.76849813456249),
@@ -429,6 +429,7 @@
             });
             polyline.setMap(map);
             shapes.push(polyline);
+            shapes.setMap(map);
 
         }
         // Get current time
