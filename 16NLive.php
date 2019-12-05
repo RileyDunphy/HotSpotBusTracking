@@ -26,6 +26,7 @@
     </div>
     <script>
         var marker;
+        var map;
 
         let searchParams = new URLSearchParams(window.location.search);
 
@@ -79,7 +80,7 @@
                     }
                 ]
             };
-            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
             marker = new google.maps.Marker({
                 map: map,
                 title: '16N Marysville',
@@ -354,7 +355,7 @@
                     //alert(data);
                     var json = JSON.parse(data);
                     marker.setPosition(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
-                    window.map.panTo(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
+                    map.setCenter(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
                 }
             });
         }

@@ -219,7 +219,7 @@ export default class App extends Component {
       );
     }
     if (meters > 5 || this.oldLocation == null) {
-      if (this.state.selectedRoute > 0 && this.state.location != null) {
+      if (this.state.selectedRoute >= 0 && this.state.location != null) {
         this.oldLocation = this.location;
         temp = JSON.parse(this.state.location);
         var coords = temp["coords"];
