@@ -201,9 +201,9 @@ export default class App extends Component {
 
   //author josh
   setRoute(routeValue) {
-    this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
       this.offline = 0;
+      this.state.selectedRoute = routeValue;
     } else if (routeValue <= 0) {
       this.offline = 1;
     }
@@ -246,7 +246,7 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
-
+        console.log(this.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -329,7 +329,7 @@ export default class App extends Component {
     }
     else if (this.signedIn) {
 
-      console.log(this.state.selectedRoute);
+      //console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
           <Text style={{
