@@ -33,7 +33,7 @@
             /* Map */
             // Instantiate the Map
             var mapOptions = {
-                zoom: 17,
+                zoom: 14,
                 center: new google.maps.LatLng('45.962544', '-66.641998'),
                 mapTypeControlOptions: {
                     mapTypeIds: [google.maps.MapTypeId.ROADMAP]
@@ -366,6 +366,7 @@
                     //alert(data);
                     var json = JSON.parse(data);
                     marker.setPosition(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
+                    window.map.panTo(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
                 }
             });
         }
