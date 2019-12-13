@@ -18,6 +18,13 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { TaskManager, Updates } from "expo";
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+//Import React Native Basic Components
+//import DeviceBrightness from 'react-native-device-brightness';
+//Import Scren brightness control library
+//import Slider from '@react-native-community/slider';
+//Import Slider to change the brightness
+import * as Brightness from 'expo-brightness';
+
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -44,10 +51,12 @@ export default class App extends Component {
     busIDScreen: false,
     signedIn: false,
     routeScreen: false,
-    date: null
+    date: null,
+    screenBrightness: 0.50
   };
 
   componentDidMount() {
+    this.askPermission();
     AsyncStorage.getItem("cityID")
       .then(value => {
         if (value !== null) {
@@ -93,7 +102,6 @@ export default class App extends Component {
       position => {
         const location = JSON.stringify(position);
         this.setState({ location });
-        this.timeConvert();
         this.publishLocationData();
         this.UpdateApp();
       },
@@ -101,26 +109,20 @@ export default class App extends Component {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
-  //Author Josh
-  timeConvert() {
-    if (this.location != null) {
-      var temp = JSON.parse(this.state.location); //first parse the json
-
-      var timestamp = temp["timestamp"];
-      var ts = new Date(timestamp);
-      var timeFormatted =
-        ts.getFullYear() +
-        "-" +
-        ts.getMonth() +
-        "-" +
-        ts.getDate() +
-        " " +
-        ts.getHours() +
-        ":" +
-        ts.getMinutes() +
-        ":" +
-        ts.getSeconds();
-      this.state.time = timeFormatted;
+  //Author Josh,
+  decrimentBrightness() {
+    brightness = this.state.screenBrightness;
+    if (brightness >= 0.11) {
+      this.state.screenBrightness = (brightness - 0.10);
+      Brightness.setSystemBrightnessAsync(this.state.screenBrightness);
+    }
+  }
+  incrementBrightness() {
+    brightness = this.state.screenBrightness;
+    if (brightness <= 0.89) {
+      this.state.screenBrightness = (brightness + 0.10);
+      Brightness.setSystemBrightnessAsync(this.state.screenBrightness);
+      Brightness.g
     }
   }
 
@@ -144,7 +146,7 @@ export default class App extends Component {
     m = (m < 10) ? "0" + m : m;
     s = (s < 10) ? "0" + s : s;
 
-    return h + ":" + m + " " + session;
+    return h + ":" + m + ":" + s + session;
   }
   //author Josh
   getCityRoutes = async () => {
@@ -201,11 +203,11 @@ export default class App extends Component {
 
   //author josh
   setRoute(routeValue) {
+    this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
-      this.offline = 0;
-      this.state.selectedRoute = routeValue;
+      this.state.offline = 0;
     } else if (routeValue <= 0) {
-      this.offline = 1;
+      this.state.offline = 1;
     }
     this.routeScreen = false;
   }
@@ -246,7 +248,6 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
-        console.log(this.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -257,8 +258,8 @@ export default class App extends Component {
           speed: speed,
           accuracy: accuracy,
           altitude: altitude,
-          bus_id: this.busID,
-          offline: this.offline
+          bus_id: this.state.busID,
+          offline: this.state.offline
         });
 
         fetch(
@@ -277,9 +278,15 @@ export default class App extends Component {
       }
     }
   }
+  askPermission() {
+    Permissions.askAsync(Permissions.SYSTEM_BRIGHTNESS);
 
+    const { status } = Permissions.getAsync(Permissions.SYSTEM_BRIGHTNESS);
+    if (status === 'granted') {
+      Brightness.setSystemBrightnessAsync(1);
+    }
+  }
   render() {
-
     let screen;
     //if the cityID is in storage, set the screen to the index
     if (this.busIDScreen == true) {
@@ -328,8 +335,6 @@ export default class App extends Component {
       );
     }
     else if (this.signedIn) {
-
-      //console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
           <Text style={{
@@ -409,6 +414,36 @@ export default class App extends Component {
               &nbsp;Out of Service&nbsp;
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.incrementBrightness()}
+          >
+            <Text
+              style={{
+                color: "white",
+                backgroundColor: "black",
+                fontSize: 40,
+                borderColor: "white",
+                borderWidth: 2
+              }}
+            >
+              &nbsp;Brightness+&nbsp;
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.decrimentBrightness()}
+          >
+            <Text
+              style={{
+                color: "white",
+                backgroundColor: "black",
+                fontSize: 40,
+                borderColor: "white",
+                borderWidth: 2
+              }}
+            >
+              &nbsp;Brightness-&nbsp;
+            </Text>
+          </TouchableOpacity>
         </View>
       );
       //if the cityID is not in storage, set the screen to the login page
@@ -450,7 +485,6 @@ export default class App extends Component {
     return <View style={styles.container}>{screen}</View>;
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
