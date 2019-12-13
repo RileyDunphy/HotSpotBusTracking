@@ -102,6 +102,7 @@
                     "cache-control": "no-cache"
                 }
             }
+            var shapes = [];
             var path = [
                 new google.maps.LatLng(45.935999426013446, -66.60817776344061),
                 new google.maps.LatLng(45.93444741397415, -66.60619292876959),
@@ -424,8 +425,21 @@
             });
             polyline.setMap(map);
             shapes.push(polyline);
-
-
+            var path = [
+                new google.maps.LatLng(45.98750955935579, -66.62948607073122),
+                new google.maps.LatLng(45.98692810077435, -66.62860630617433),
+                new google.maps.LatLng(45.98629445305792, -66.6275924311667),
+                new google.maps.LatLng(45.98595153479837, -66.62683068380647)
+            ];
+            var polyline = new google.maps.Polyline({
+                path: path,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            polyline.setMap(map);
+            shapes.push(polyline);
+            shapes.setMap(map);
 
         }
         // Get current time

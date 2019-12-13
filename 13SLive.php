@@ -102,7 +102,7 @@
                     "cache-control": "no-cache"
                 }
             }
-
+            var shapes = [];
             var path = [
                 new google.maps.LatLng(46.01372849630655, -66.6291069253761),
                 new google.maps.LatLng(46.01362045631899, -66.63031928385084),
@@ -113,9 +113,14 @@
                 new google.maps.LatLng(46.010458698604126, -66.63427259073501),
                 new google.maps.LatLng(46.00975775249945, -66.6348946214423),
                 new google.maps.LatLng(46.009277124706955, -66.6352379441962),
-                new google.maps.LatLng(46.0081109329352, -66.63627327687595),
-                new google.maps.LatLng(46.00729204263113, -66.63694382912968),
-                new google.maps.LatLng(46.00655807505245, -66.63754457369117),
+                new google.maps.LatLng(46.00810646311121, -66.63628268679821),
+                new google.maps.LatLng(46.008838596021114, -66.63814784440774),
+                new google.maps.LatLng(46.00946236415592, -66.63968206796426),
+                new google.maps.LatLng(46.00853579756571, -66.64045757312812),
+                new google.maps.LatLng(46.008215362617584, -66.64070595697655),
+                new google.maps.LatLng(46.0076973350255, -66.63937983356766),
+                new google.maps.LatLng(46.00710543336517, -66.63784675493338),
+                new google.maps.LatLng(46.00687214817147, -66.63729690208532),
                 new google.maps.LatLng(46.00378901243789, -66.63989418878822),
                 new google.maps.LatLng(45.99953481783763, -66.64370465918915),
                 new google.maps.LatLng(45.99640378427915, -66.64639112666617),
@@ -330,6 +335,23 @@
             });
             polyline.setMap(map);
             shapes.push(polyline);
+            var path = [
+                new google.maps.LatLng(45.96398582436916, -66.64539157280751),
+                new google.maps.LatLng(45.96461599857885, -66.64687215218373),
+                new google.maps.LatLng(45.96479498166264, -66.64777873883077),
+                new google.maps.LatLng(45.963961368188194, -66.6484391911215),
+                new google.maps.LatLng(45.96424476115259, -66.65122332407896),
+                new google.maps.LatLng(45.96437713500105, -66.65247984849066)
+            ];
+            var polyline = new google.maps.Polyline({
+                path: path,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            polyline.setMap(map);
+            shapes.push(polyline);
+            shapes.setMap(shapes);
 
         }
         // Get current time

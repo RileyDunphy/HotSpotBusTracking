@@ -102,6 +102,7 @@
                     "cache-control": "no-cache"
                 }
             }
+            var shapes = [];
             var path = [
                 new google.maps.LatLng(45.978304733254184, -66.73120245780302),
                 new google.maps.LatLng(45.978289821657064, -66.72783360328032),
@@ -263,6 +264,23 @@
             });
             polyline.setMap(map);
             shapes.push(polyline);
+            var path = [
+                new google.maps.LatLng(45.963019403586664, -66.64313709758358),
+                new google.maps.LatLng(45.962059196374334, -66.64397931121425),
+                new google.maps.LatLng(45.96155417490123, -66.64282037164133),
+                new google.maps.LatLng(45.96111228351618, -66.64174482564948),
+                new google.maps.LatLng(45.9616325773978, -66.64132492615477),
+                new google.maps.LatLng(45.96208347030321, -66.64092252662704)
+            ];
+            var polyline = new google.maps.Polyline({
+                path: path,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            polyline.setMap(map);
+            shapes.push(polyline);
+            shapes.setMap(shapes);
 
 
         }
