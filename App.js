@@ -52,11 +52,11 @@ export default class App extends Component {
     signedIn: false,
     routeScreen: false,
     date: null,
-    screenBrightness: 55
+    screenBrightness: 0.55
   };
 
   componentDidMount() {
-
+    this.askPermission();
     AsyncStorage.getItem("cityID")
       .then(value => {
         if (value !== null) {
@@ -102,7 +102,6 @@ export default class App extends Component {
       position => {
         const location = JSON.stringify(position);
         this.setState({ location });
-        this.timeConvert();
         this.publishLocationData();
         this.UpdateApp();
       },
@@ -111,41 +110,18 @@ export default class App extends Component {
     );
   }
   //Author Josh,
-  decrimentBrightness(){
-    console.log("in decriment");
-    brightness=this.state.screenBrightness;
-    console.log(brightness);
-    if(brightness>=11){
-      this.state.screenBrightness=(brightness-10);
-     // console.log(this.screenBrightness);
+  decrimentBrightness() {
+    brightness = this.state.screenBrightness;
+    if (brightness >= 0.11) {
+      this.state.screenBrightness = (brightness - 0.10);
+      Brightness.setSystemBrightnessAsync(this.state.screenBrightness);
     }
   }
-  incrementBrightness(){
-    brightness=this.state.screenBrightness;
-    if(brightness<=89){
-      this.state.screenBrightness=(brightness+10);
-    }
-  }
-  //Author Josh
-  timeConvert() {
-    if (this.location != null) {
-      var temp = JSON.parse(this.state.location); //first parse the json
-
-      var timestamp = temp["timestamp"];
-      var ts = new Date(timestamp);
-      var timeFormatted =
-        ts.getFullYear() +
-        "-" +
-        ts.getMonth() +
-        "-" +
-        ts.getDate() +
-        " " +
-        ts.getHours() +
-        ":" +
-        ts.getMinutes() +
-        ":" +
-        ts.getSeconds();
-      this.state.time = timeFormatted;
+  incrementBrightness() {
+    brightness = this.state.screenBrightness;
+    if (brightness <= 0.89) {
+      this.state.screenBrightness = (brightness + 0.10);
+      Brightness.setSystemBrightnessAsync(this.state.screenBrightness);
     }
   }
 
@@ -169,7 +145,7 @@ export default class App extends Component {
     m = (m < 10) ? "0" + m : m;
     s = (s < 10) ? "0" + s : s;
 
-    return h + ":" + m + " " +s+ session;
+    return h + ":" + m + ":" + s + session;
   }
   //author Josh
   getCityRoutes = async () => {
@@ -271,7 +247,7 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
-        console.log(this.offline);
+        //console.log(this.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -302,40 +278,15 @@ export default class App extends Component {
       }
     }
   }
-// askPermission(){
-//  await Permissions.askAsync(Permissions.SYSTEM_BRIGHTNESS);
+  askPermission() {
+    Permissions.askAsync(Permissions.SYSTEM_BRIGHTNESS);
 
-  //const { status } = await Permissions.getAsync(Permissions.SYSTEM_BRIGHTNESS);
-  //if (status === 'granted') {
-   // Brightness.setSystemBrightnessAsync(1);
- // }
-//}
+    const { status } = Permissions.getAsync(Permissions.SYSTEM_BRIGHTNESS);
+    if (status === 'granted') {
+      Brightness.setSystemBrightnessAsync(1);
+    }
+  }
   render() {
-    //askPermission();
-    var date = new Date();
-    var h = date.getHours(); // 0 - 23
-    var m = date.getMinutes(); // 0 - 59
-    var s = date.getSeconds(); // 0 - 59
-    var session = "AM";
-
-    if (h == 0) {
-      h = 12;
-    }
-
-    if (h > 12) {
-      h = h - 12;
-      session = "PM";
-    }
-
-    h = (h < 10) ? "0" + h : h;
-    m = (m < 10) ? "0" + m : m;
-    s = (s < 10) ? "0" + s : s;
-
-    var dateTime= h + ":" + m + " " +s+ session;
-    	if(this.screenBrightness!=null || this.screenBrightness!=undefined){
-        console.log(this.screenBrightness);
-    //Brightness.setSystemBrightnessAsync(0.05);
-      }
     let screen;
     //if the cityID is in storage, set the screen to the index
     if (this.busIDScreen == true) {
@@ -384,7 +335,6 @@ export default class App extends Component {
       );
     }
     else if (this.signedIn) {
-      //console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
           <Text style={{
