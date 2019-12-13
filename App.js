@@ -18,6 +18,13 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { TaskManager, Updates } from "expo";
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+//Import React Native Basic Components
+//import DeviceBrightness from 'react-native-device-brightness';
+//Import Scren brightness control library
+//import Slider from '@react-native-community/slider';
+//Import Slider to change the brightness
+import * as Brightness from 'expo-brightness';
+
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -44,10 +51,12 @@ export default class App extends Component {
     busIDScreen: false,
     signedIn: false,
     routeScreen: false,
-    date: null
+    date: null,
+    screenBrightness: 55
   };
 
   componentDidMount() {
+
     AsyncStorage.getItem("cityID")
       .then(value => {
         if (value !== null) {
@@ -101,6 +110,22 @@ export default class App extends Component {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
+  //Author Josh,
+  decrimentBrightness(){
+    console.log("in decriment");
+    brightness=this.state.screenBrightness;
+    console.log(brightness);
+    if(brightness>=11){
+      this.state.screenBrightness=(brightness-10);
+     // console.log(this.screenBrightness);
+    }
+  }
+  incrementBrightness(){
+    brightness=this.state.screenBrightness;
+    if(brightness<=89){
+      this.state.screenBrightness=(brightness+10);
+    }
+  }
   //Author Josh
   timeConvert() {
     if (this.location != null) {
@@ -144,7 +169,7 @@ export default class App extends Component {
     m = (m < 10) ? "0" + m : m;
     s = (s < 10) ? "0" + s : s;
 
-    return h + ":" + m + " " + session;
+    return h + ":" + m + " " +s+ session;
   }
   //author Josh
   getCityRoutes = async () => {
@@ -201,9 +226,9 @@ export default class App extends Component {
 
   //author josh
   setRoute(routeValue) {
+    this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
       this.offline = 0;
-      this.state.selectedRoute = routeValue;
     } else if (routeValue <= 0) {
       this.offline = 1;
     }
@@ -277,9 +302,40 @@ export default class App extends Component {
       }
     }
   }
+// askPermission(){
+//  await Permissions.askAsync(Permissions.SYSTEM_BRIGHTNESS);
 
+  //const { status } = await Permissions.getAsync(Permissions.SYSTEM_BRIGHTNESS);
+  //if (status === 'granted') {
+   // Brightness.setSystemBrightnessAsync(1);
+ // }
+//}
   render() {
+    //askPermission();
+    var date = new Date();
+    var h = date.getHours(); // 0 - 23
+    var m = date.getMinutes(); // 0 - 59
+    var s = date.getSeconds(); // 0 - 59
+    var session = "AM";
 
+    if (h == 0) {
+      h = 12;
+    }
+
+    if (h > 12) {
+      h = h - 12;
+      session = "PM";
+    }
+
+    h = (h < 10) ? "0" + h : h;
+    m = (m < 10) ? "0" + m : m;
+    s = (s < 10) ? "0" + s : s;
+
+    var dateTime= h + ":" + m + " " +s+ session;
+    	if(this.screenBrightness!=null || this.screenBrightness!=undefined){
+        console.log(this.screenBrightness);
+    //Brightness.setSystemBrightnessAsync(0.05);
+      }
     let screen;
     //if the cityID is in storage, set the screen to the index
     if (this.busIDScreen == true) {
@@ -328,7 +384,6 @@ export default class App extends Component {
       );
     }
     else if (this.signedIn) {
-
       //console.log(this.state.selectedRoute);
       screen = (
         <View style={styles.container}>
@@ -409,6 +464,36 @@ export default class App extends Component {
               &nbsp;Out of Service&nbsp;
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.incrementBrightness()}
+          >
+            <Text
+              style={{
+                color: "white",
+                backgroundColor: "black",
+                fontSize: 40,
+                borderColor: "white",
+                borderWidth: 2
+              }}
+            >
+              &nbsp;Brightness+&nbsp;
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.decrimentBrightness()}
+          >
+            <Text
+              style={{
+                color: "white",
+                backgroundColor: "black",
+                fontSize: 40,
+                borderColor: "white",
+                borderWidth: 2
+              }}
+            >
+              &nbsp;Brightness-&nbsp;
+            </Text>
+          </TouchableOpacity>
         </View>
       );
       //if the cityID is not in storage, set the screen to the login page
@@ -450,7 +535,6 @@ export default class App extends Component {
     return <View style={styles.container}>{screen}</View>;
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
