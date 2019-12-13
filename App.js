@@ -52,7 +52,7 @@ export default class App extends Component {
     signedIn: false,
     routeScreen: false,
     date: null,
-    screenBrightness: 0.55
+    screenBrightness: 0.50
   };
 
   componentDidMount() {
@@ -122,6 +122,7 @@ export default class App extends Component {
     if (brightness <= 0.89) {
       this.state.screenBrightness = (brightness + 0.10);
       Brightness.setSystemBrightnessAsync(this.state.screenBrightness);
+      Brightness.g
     }
   }
 
@@ -204,9 +205,9 @@ export default class App extends Component {
   setRoute(routeValue) {
     this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
-      this.offline = 0;
+      this.state.offline = 0;
     } else if (routeValue <= 0) {
-      this.offline = 1;
+      this.state.offline = 1;
     }
     this.routeScreen = false;
   }
@@ -247,7 +248,6 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
-        //console.log(this.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -258,8 +258,8 @@ export default class App extends Component {
           speed: speed,
           accuracy: accuracy,
           altitude: altitude,
-          bus_id: this.busID,
-          offline: this.offline
+          bus_id: this.state.busID,
+          offline: this.state.offline
         });
 
         fetch(
