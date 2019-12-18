@@ -18,11 +18,6 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { TaskManager, Updates } from "expo";
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-//Import React Native Basic Components
-//import DeviceBrightness from 'react-native-device-brightness';
-//Import Scren brightness control library
-//import Slider from '@react-native-community/slider';
-//Import Slider to change the brightness
 import * as Brightness from 'expo-brightness';
 
 
@@ -37,6 +32,7 @@ export default class App extends Component {
   state = {
     location: null,
     oldLocation: null,
+    //how often the coordinates update
     timer: setInterval(() => this.findCoordinates(), 5000),
     txtCityID: null,
     txtBusID: null,
@@ -70,7 +66,7 @@ export default class App extends Component {
       this.getCityRoutes(this.state.cityID); //this method sets the routes for the city
     }
   }
-
+//update app functionality(runs continuously between 11:30pm and midnight)
   UpdateApp() {
     var today = new Date();
     var checkHour = today.getHours();
@@ -80,7 +76,7 @@ export default class App extends Component {
       Updates.reload();
     }
   }
-
+//used to see if the bus is moving
   haversineFormula(lat1, lon1, lat2, lon2) {
     // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -96,7 +92,7 @@ export default class App extends Component {
     var d = R * c;
     return d * 1000; // meters
   }
-
+//get bus location
   findCoordinates() {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -109,7 +105,7 @@ export default class App extends Component {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
-  //Author Josh,
+//screen brightness functions
   decrimentBrightness() {
     brightness = this.state.screenBrightness;
     if (brightness >= 0.11) {
@@ -125,7 +121,7 @@ export default class App extends Component {
       Brightness.g
     }
   }
-
+//date for display
   showTime() {
     var date = new Date();
     var h = date.getHours(); // 0 - 23
@@ -148,7 +144,7 @@ export default class App extends Component {
 
     return h + ":" + m + ":" + s + session;
   }
-  //author Josh
+//get all routes for a city
   getCityRoutes = async () => {
     var city = await AsyncStorage.getItem("cityID");
     fetch("https://hotspotparking.com/busTracking/getRoutesForCity", {
@@ -201,7 +197,6 @@ export default class App extends Component {
     this.busIDScreen = true;
   };
 
-  //author josh
   setRoute(routeValue) {
     this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
@@ -278,6 +273,7 @@ export default class App extends Component {
       }
     }
   }
+  //allow brightness controls
   askPermission() {
     Permissions.askAsync(Permissions.SYSTEM_BRIGHTNESS);
 
@@ -288,7 +284,7 @@ export default class App extends Component {
   }
   render() {
     let screen;
-    //if the cityID is in storage, set the screen to the index
+    //if true, show the "change bus id" screen
     if (this.busIDScreen == true) {
       screen = (
         <View style={styles.container}>
@@ -312,6 +308,7 @@ export default class App extends Component {
           <Button onPress={() => this.setID()} title="Change ID" />
         </View>
       );
+      //Radio select screen
     } else if (this.routeScreen) {
       screen = (
         <View style={styles.container}>
@@ -334,6 +331,7 @@ export default class App extends Component {
         </View>
       );
     }
+    //main page
     else if (this.signedIn) {
       screen = (
         <View style={styles.container}>
