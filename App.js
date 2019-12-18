@@ -166,18 +166,18 @@ export default class App extends Component {
   };
 
   setID = async () => {
-    if (this.busIDScreen == false) {
-      await AsyncStorage.setItem("cityID", this.txtCityID);
-      this.cityID = await AsyncStorage.getItem("cityID");
+    if (!this.busIDScreen) {
+      await AsyncStorage.setItem("cityID", this.state.txtCityID);
+      this.state.cityID = await AsyncStorage.getItem("cityID");
     }
-    await AsyncStorage.setItem("busID", this.txtBusID);
+    await AsyncStorage.setItem("busID", this.state.txtBusID);
     this.busID = await AsyncStorage.getItem("busID");
     this.busIDScreen = false;
     this.signedIn = true;
   };
 
   getID = async () => {
-    this.cityID = await AsyncStorage.getItem("cityID");
+    this.state.cityID = await AsyncStorage.getItem("cityID");
     this.busID = await AsyncStorage.getItem("busID");
   };
 
@@ -207,7 +207,6 @@ export default class App extends Component {
     this.routeScreen = false;
   }
   publishLocationData() {
-    //console.log(this.state.selectedRoute);
     
     if (this.oldLocation != null) {
       var meters = this.haversineFormula(
@@ -245,6 +244,8 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
+        console.log(this.busID);
+        console.log(this.state.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -255,11 +256,9 @@ export default class App extends Component {
           speed: speed,
           accuracy: accuracy,
           altitude: altitude,
-          bus_id: this.state.busID,
+          bus_id: this.busID,
           offline: this.state.offline
         });
-        //console.log(this.state.txtBusID);
-        //console.log(json);
 
         fetch(
           "https://hotspotparking.com/busTracking/submitBusTrackingInformation",
@@ -307,7 +306,7 @@ export default class App extends Component {
               color: "white",
               fontSize: 40
             }}
-            onChangeText={text => (this.txtBusID = text)}
+            onChangeText={text => (this.state.txtBusID = text)}
           />
           <Button onPress={() => this.setID()} title="Change ID" />
         </View>
