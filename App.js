@@ -43,7 +43,7 @@ export default class App extends Component {
     routes: null,
     routelist: null,
     selectedRoute: 0,
-    offline: 1,
+    offline: true,
     busIDScreen: false,
     signedIn: false,
     routeScreen: false,
@@ -66,7 +66,7 @@ export default class App extends Component {
       this.getCityRoutes(this.state.cityID); //this method sets the routes for the city
     }
   }
-//update app functionality(runs continuously between 11:30pm and midnight)
+  //update app functionality(runs continuously between 11:30pm and midnight)
   UpdateApp() {
     var today = new Date();
     var checkHour = today.getHours();
@@ -76,7 +76,7 @@ export default class App extends Component {
       Updates.reload();
     }
   }
-//used to see if the bus is moving
+  //used to see if the bus is moving
   haversineFormula(lat1, lon1, lat2, lon2) {
     // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -92,7 +92,7 @@ export default class App extends Component {
     var d = R * c;
     return d * 1000; // meters
   }
-//get bus location
+  //get bus location
   findCoordinates() {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -105,7 +105,7 @@ export default class App extends Component {
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
-//screen brightness functions
+  //screen brightness functions
   decrimentBrightness() {
     brightness = this.state.screenBrightness;
     if (brightness >= 0.11) {
@@ -121,7 +121,7 @@ export default class App extends Component {
       Brightness.g
     }
   }
-//date for display
+  //date for display
   showTime() {
     var date = new Date();
     var h = date.getHours(); // 0 - 23
@@ -144,7 +144,7 @@ export default class App extends Component {
 
     return h + ":" + m + ":" + s + session;
   }
-//get all routes for a city
+  //get all routes for a city
   getCityRoutes = async () => {
     var city = await AsyncStorage.getItem("cityID");
     fetch("https://hotspotparking.com/busTracking/getRoutesForCity", {
@@ -198,16 +198,16 @@ export default class App extends Component {
   };
 
   setRoute(routeValue) {
-    this.state.selectedRoute = routeValue;
     if (routeValue > 0) {
-      this.state.offline = 0;
+      this.state.offline = false;
+      this.state.selectedRoute = routeValue;
     } else if (routeValue <= 0) {
-      this.state.offline = 1;
+      this.state.offline = true;
     }
     this.routeScreen = false;
   }
   publishLocationData() {
-    
+
     if (this.oldLocation != null) {
       var meters = this.haversineFormula(
         this.oldLocation["latitude"],
@@ -216,7 +216,7 @@ export default class App extends Component {
         this.location["longitude"]
       );
     }
-    if (meters > 5 || this.oldLocation == null && this.state.selectedRoute!=0) {
+    if (meters > 5 || this.oldLocation == null && this.state.selectedRoute != 0) {
       if (this.state.selectedRoute >= 0 && this.state.location != null) {
         this.oldLocation = this.location;
         temp = JSON.parse(this.state.location);
@@ -244,7 +244,6 @@ export default class App extends Component {
           ":" +
           ts.getSeconds();
         this.state.time = timeFormatted;
-        console.log(this.busID);
         console.log(this.state.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
@@ -336,6 +335,11 @@ export default class App extends Component {
     }
     //main page
     else if (this.signedIn) {
+      if (this.state.offline) {
+        var routeName = "";
+      } else {
+        var routeName = this.state.routelist.data[this.state.selectedRoute];
+      }
       screen = (
         <View style={styles.container}>
           <Text style={{
@@ -382,7 +386,7 @@ export default class App extends Component {
               padding: 20
             }}
           >
-            {this.state.routelist.data[this.state.selectedRoute]}
+            {routeName}
           </Text>
           <TouchableOpacity
             onPress={() => this.routeScreen = true}
