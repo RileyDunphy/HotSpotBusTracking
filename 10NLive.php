@@ -1,5 +1,18 @@
-<html>
+<?php
+// define the path and name of cached file
+$cachefile = 'cached-files/'.date('M-d-Y').'.php';
+// define how long we want to keep the file in seconds. I set mine to 5 hours.
+$cachetime = 18000;
+// Check if the cached file is still fresh. If it is, serve it up and exit.
+if (file_exists($cachefile) && time() - $cachetime < filemtime($cachefile)) {
+    include($cachefile);
+    exit;
+}
+// if there is either no file OR the file to too old, render the page and capture the HTML.
+ob_start();
+?>
 
+<html>
 <head>
     <title>HotSpot Bus Tracker</title>
     <meta charset="utf-8">
@@ -318,8 +331,19 @@
                     //on receive of reply
                     //alert(data);
                     var json = JSON.parse(data);
-                    marker.setPosition(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
-                    map.setCenter(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
+                    console.log(json);
+                    console.log(json['data']['length']);
+                    //one bus
+                    if(json['data']['length']==1){
+                    marker.setPosition(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    map.setCenter(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    }//two bus
+                    else if(json['data']['length']==2){
+                    marker.setPosition(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    marker.setPosition(new google.maps.LatLng(json['data'][1]['BusLocation']['latitude'], json['data'][1]['BusLocation']['longitude']));
+                    
+                    map.setCenter(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    }
                 }
             });
         }
@@ -467,3 +491,11 @@
 </style>
 
 </html>
+<?php
+// We're done! Save the cached content to a file
+$fp = fopen($cachefile, 'w');
+fwrite($fp, ob_get_contents());
+fclose($fp);
+// finally send browser output
+ob_end_flush();
+?>

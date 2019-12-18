@@ -296,8 +296,19 @@
                     //on receive of reply
                     //alert(data);
                     var json = JSON.parse(data);
-                    marker.setPosition(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
-                    map.setCenter(new google.maps.LatLng(json['data']['BusLocation']['latitude'], json['data']['BusLocation']['longitude']));
+                    console.log(json);
+                    console.log(json['data']['length']);
+                    //one bus
+                    if(json['data']['length']==1){
+                    marker.setPosition(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    map.setCenter(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    }//two bus
+                    else if(json['data']['length']==2){
+                    marker.setPosition(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    marker.setPosition(new google.maps.LatLng(json['data'][1]['BusLocation']['latitude'], json['data'][1]['BusLocation']['longitude']));
+                    
+                    map.setCenter(new google.maps.LatLng(json['data'][0]['BusLocation']['latitude'], json['data'][0]['BusLocation']['longitude']));
+                    }
                 }
             });
         }

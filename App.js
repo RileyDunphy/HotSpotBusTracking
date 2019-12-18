@@ -132,8 +132,8 @@ export default class App extends Component {
     if (h == 0) {
       h = 12;
     }
-
-    if (h > 12) {
+    //for noon
+    if (h >= 12) {
       h = h - 12;
       session = "PM";
     }
@@ -207,6 +207,8 @@ export default class App extends Component {
     this.routeScreen = false;
   }
   publishLocationData() {
+    //console.log(this.state.selectedRoute);
+    
     if (this.oldLocation != null) {
       var meters = this.haversineFormula(
         this.oldLocation["latitude"],
@@ -215,7 +217,7 @@ export default class App extends Component {
         this.location["longitude"]
       );
     }
-    if (meters > 5 || this.oldLocation == null) {
+    if (meters > 5 || this.oldLocation == null && this.state.selectedRoute!=0) {
       if (this.state.selectedRoute >= 0 && this.state.location != null) {
         this.oldLocation = this.location;
         temp = JSON.parse(this.state.location);
@@ -256,6 +258,8 @@ export default class App extends Component {
           bus_id: this.state.busID,
           offline: this.state.offline
         });
+        //console.log(this.state.txtBusID);
+        //console.log(json);
 
         fetch(
           "https://hotspotparking.com/busTracking/submitBusTrackingInformation",
