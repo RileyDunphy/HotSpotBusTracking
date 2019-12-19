@@ -129,14 +129,20 @@ export default class App extends Component {
     var s = date.getSeconds(); // 0 - 59
     var session = "AM";
 
+    //for noon
+    if (h == 12) {
+      session = "PM";
+    }
+    //for midnight
     if (h == 0) {
       h = 12;
     }
-    //for noon
-    if (h >= 12) {
+    //for afternoon
+    if (h > 12) {
       h = h - 12;
       session = "PM";
     }
+
 
     h = (h < 10) ? "0" + h : h;
     m = (m < 10) ? "0" + m : m;
@@ -243,6 +249,11 @@ export default class App extends Component {
           ts.getMinutes() +
           ":" +
           ts.getSeconds();
+
+          var offlineVal=0;
+          if(this.state.offline){
+            offlineVal=1;
+          }
         this.state.time = timeFormatted;
         console.log(this.state.offline);
         var json = JSON.stringify({
@@ -256,8 +267,9 @@ export default class App extends Component {
           accuracy: accuracy,
           altitude: altitude,
           bus_id: this.busID,
-          offline: this.state.offline
+          offline: offlineVal
         });
+        console.log(offlineVal);
 
         fetch(
           "https://hotspotparking.com/busTracking/submitBusTrackingInformation",
