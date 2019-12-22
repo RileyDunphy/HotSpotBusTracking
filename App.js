@@ -172,11 +172,11 @@ export default class App extends Component {
   };
 
   setID = async () => {
-    if (this.state.busIDScreen ==false) {
-      await AsyncStorage.setItem("cityID", this.txtCityID);
+    if (!this.busIDScreen) {
+      await AsyncStorage.setItem("cityID", this.state.txtCityID);
       this.state.cityID = await AsyncStorage.getItem("cityID");
     }
-    await AsyncStorage.setItem("busID", this.txtBusID);
+    await AsyncStorage.setItem("busID", this.state.txtBusID);
     this.busID = await AsyncStorage.getItem("busID");
     this.busIDScreen = false;
     this.signedIn = true;
@@ -194,7 +194,6 @@ export default class App extends Component {
     this.busID = await AsyncStorage.getItem("busID");
     this.txtCityID = await AsyncStorage.getItem("cityID");
     this.txtBusID = await AsyncStorage.getItem("busID");
-    this.signedIn = false;
   };
 
   clearBusId = async () => {
@@ -369,7 +368,7 @@ export default class App extends Component {
               bottom: 0,
               right: 0
             }}
-            onPress={this.clearStorage}
+            onPress={this.clearBusId}
           >
             <Text
               style={{
