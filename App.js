@@ -172,10 +172,12 @@ export default class App extends Component {
   };
 
   setID = async () => {
+    console.log("in function")
     if (this.state.busIDScreen ==false) {
       await AsyncStorage.setItem("cityID", this.txtCityID);
       this.state.cityID = await AsyncStorage.getItem("cityID");
     }
+    console.log(this.state.txtBusID);
     await AsyncStorage.setItem("busID", this.txtBusID);
     this.busID = await AsyncStorage.getItem("busID");
     this.busIDScreen = false;
@@ -188,13 +190,13 @@ export default class App extends Component {
   };
 
   clearStorage = async () => {
-    await AsyncStorage.removeItem("cityID");
+    //await AsyncStorage.removeItem("cityID");
     await AsyncStorage.removeItem("busID");
-    this.cityID = await AsyncStorage.getItem("cityID");
+    //this.cityID = await AsyncStorage.getItem("cityID");
     this.busID = await AsyncStorage.getItem("busID");
-    this.txtCityID = await AsyncStorage.getItem("cityID");
+    //this.txtCityID = await AsyncStorage.getItem("cityID");
     this.txtBusID = await AsyncStorage.getItem("busID");
-    this.signedIn = false;
+    //this.signedIn = false;
   };
 
   clearBusId = async () => {
@@ -369,7 +371,7 @@ export default class App extends Component {
               bottom: 0,
               right: 0
             }}
-            onPress={this.clearStorage}
+            onPress={this.clearBusId}
           >
             <Text
               style={{
