@@ -172,14 +172,18 @@ export default class App extends Component {
   };
 
   setID = async () => {
-    console.log("in function")
-    if (this.state.busIDScreen ==false) {
+    console.log(this.busIDScreen);
+    if (this.busIDScreen == false) {
       await AsyncStorage.setItem("cityID", this.txtCityID);
       this.state.cityID = await AsyncStorage.getItem("cityID");
     }
+    await AsyncStorage.setItem("cityID", "1");//take these out after reset
+      this.state.cityID = await AsyncStorage.getItem("cityID");//take out after reset
+      await AsyncStorage.setItem("busID", this.state.txtBusID);
+      this.state.busID = await AsyncStorage.getItem("busID");
+    console.log(this.state);
     console.log(this.state.txtBusID);
-    await AsyncStorage.setItem("busID", this.txtBusID);
-    this.busID = await AsyncStorage.getItem("busID");
+
     this.busIDScreen = false;
     this.signedIn = true;
   };
@@ -258,7 +262,7 @@ export default class App extends Component {
             offlineVal=1;
           }
         this.state.time = timeFormatted;
-        console.log(this.state.offline);
+        //console.log(this.state.offline);
         var json = JSON.stringify({
           route_id: this.state.selectedRoute,
           timestamp: timeFormatted,
@@ -269,10 +273,11 @@ export default class App extends Component {
           speed: speed,
           accuracy: accuracy,
           altitude: altitude,
-          bus_id: this.busID,
+          bus_id: this.state.busID,
           offline: offlineVal
         });
-        console.log(offlineVal);
+        //onsole.log(offlineVal);
+        console.log(json);
 
         fetch(
           "https://hotspotparking.com/busTracking/submitBusTrackingInformation",
@@ -379,7 +384,7 @@ export default class App extends Component {
                 fontSize: 30
               }}
             >
-              {this.busID} - Change
+              {this.state.busID} - Change
             </Text>
           </TouchableOpacity>
           <Text
