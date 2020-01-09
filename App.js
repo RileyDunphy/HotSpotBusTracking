@@ -190,14 +190,14 @@ export default class App extends Component {
 
   getID = async () => {
     this.state.cityID = await AsyncStorage.getItem("cityID");
-    this.busID = await AsyncStorage.getItem("busID");
+    this.state.busID = await AsyncStorage.getItem("busID");
   };
 
   clearStorage = async () => {
     //await AsyncStorage.removeItem("cityID");
     await AsyncStorage.removeItem("busID");
     //this.cityID = await AsyncStorage.getItem("cityID");
-    this.busID = await AsyncStorage.getItem("busID");
+    this.state.busID = await AsyncStorage.getItem("busID");
     //this.txtCityID = await AsyncStorage.getItem("cityID");
     this.txtBusID = await AsyncStorage.getItem("busID");
     //this.signedIn = false;
@@ -205,7 +205,7 @@ export default class App extends Component {
 
   clearBusId = async () => {
     await AsyncStorage.removeItem("busID");
-    this.busID = await AsyncStorage.getItem("busID");
+    this.state.busID = await AsyncStorage.getItem("busID");
     this.txtBusID = await AsyncStorage.getItem("busID");
     this.busIDScreen = true;
   };
